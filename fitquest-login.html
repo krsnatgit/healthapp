@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitQuest - Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF6B35;
+            --secondary: #F7931E;
+            --success: #4ECDC4;
+            --energy: #FFE66D;
+            --power: #A8E6CF;
+            --danger: #FF6B6B;
+            --dark: #2D3561;
+            --darker: #1A1F3A;
+            --light: #FFF8F0;
+            --purple: #9B59B6;
+            --blue: #3498DB;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 53, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 20%, rgba(255, 230, 109, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+            animation: pulseBackground 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulseBackground {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float-particle 15s infinite ease-in-out;
+        }
+        
+        @keyframes float-particle {
+            0%, 100% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            animation: slideIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .logo {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 3.5rem;
+            color: var(--light);
+            text-shadow: 
+                5px 5px 0px var(--primary),
+                10px 10px 0px rgba(0, 0, 0, 0.3);
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+        }
+        
+        .tagline {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--energy);
+            font-size: 0.8rem;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+        
+        .login-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            border: 6px solid var(--dark);
+            border-radius: 30px;
+            padding: 50px 40px;
+            box-shadow: 
+                10px 10px 0px var(--darker),
+                0 20px 60px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 4s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 800;
+            color: var(--dark);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 5px solid var(--dark);
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 5px 5px 0px var(--darker);
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 7px 7px 0px var(--darker);
+        }
+        
+        .character-select {
+            margin: 30px 0;
+        }
+        
+        .character-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .character-option {
+            background: white;
+            border: 4px solid var(--dark);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 4px 4px 0px var(--darker);
+        }
+        
+        .character-option:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 6px 6px 0px var(--darker);
+        }
+        
+        .character-option.selected {
+            border-color: var(--success);
+            background: linear-gradient(135deg, var(--power), var(--success));
+            transform: scale(1.05);
+            box-shadow: 6px 6px 0px var(--darker);
+        }
+        
+        .character-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: block;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .character-name {
+            font-weight: 800;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        .action-btn {
+            width: 100%;
+            padding: 20px;
+            border: 5px solid var(--dark);
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 6px 6px 0px var(--darker);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.3s ease;
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 9px 9px 0px var(--darker);
+        }
+        
+        .action-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px var(--darker);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--success), var(--power));
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 3px solid var(--dark);
+        }
+        
+        .divider span {
+            padding: 0 15px;
+            font-weight: 800;
+            color: var(--dark);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.6rem;
+        }
+        
+        .toggle-text {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .toggle-link {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 900;
+        }
+        
+        .toggle-link:hover {
+            color: var(--secondary);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .logo { font-size: 2rem; }
+            .tagline { font-size: 0.6rem; }
+            .login-card { padding: 30px 20px; }
+            .welcome-text { font-size: 1rem; }
+            .character-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 1s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 2.5s;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 4.5s;"></div>
+    
+    <div class="container">
+        <div class="logo-section">
+            <div class="logo">⚔️ FITQUEST ⚔️</div>
+            <p class="tagline">Level Up Your Health!</p>
+        </div>
+        
+        <div class="login-card">
+            <div class="card-content">
+                <!-- Login Form -->
+                <div id="loginForm" class="form-section">
+                    <div class="welcome-text">Enter the Arena</div>
+                    
+                    <div class="input-group">
+                        <label for="loginUsername">🎮 Username</label>
+                        <input type="text" id="loginUsername" placeholder="Your hero name" autocomplete="username">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="loginPassword">🔑 Password</label>
+                        <input type="password" id="loginPassword" placeholder="Your secret code" autocomplete="current-password">
+                    </div>
+                    
+                    <button class="action-btn btn-primary" onclick="login()">🚀 Start Adventure</button>
+                    
+                    <div class="toggle-text">
+                        New hero? <span class="toggle-link" onclick="toggleForm()">Create Character</span>
+                    </div>
+                </div>
+                
+                <!-- Signup Form -->
+                <div id="signupForm" class="form-section hidden">
+                    <div class="welcome-text">Create Your Hero</div>
+                    
+                    <div class="input-group">
+                        <label for="signupUsername">🎮 Choose Username</label>
+                        <input type="text" id="signupUsername" placeholder="Your hero name" autocomplete="username">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="signupPassword">🔑 Set Password</label>
+                        <input type="password" id="signupPassword" placeholder="Create secret code" autocomplete="new-password">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="signupConfirm">🔐 Confirm Password</label>
+                        <input type="password" id="signupConfirm" placeholder="Repeat secret code" autocomplete="new-password">
+                    </div>
+                    
+                    <div class="character-select">
+                        <div class="character-title">Choose Your Class</div>
+                        <div class="character-grid">
+                            <div class="character-option" onclick="selectCharacter('warrior')">
+                                <span class="character-icon">⚔️</span>
+                                <div class="character-name">Warrior</div>
+                            </div>
+                            <div class="character-option" onclick="selectCharacter('mage')">
+                                <span class="character-icon">🔮</span>
+                                <div class="character-name">Mage</div>
+                            </div>
+                            <div class="character-option" onclick="selectCharacter('ranger')">
+                                <span class="character-icon">🏹</span>
+                                <div class="character-name">Ranger</div>
+                            </div>
+                            <div class="character-option" onclick="selectCharacter('monk')">
+                                <span class="character-icon">🧘</span>
+                                <div class="character-name">Monk</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="action-btn btn-secondary" onclick="signup()">✨ Begin Quest</button>
+                    
+                    <div class="toggle-text">
+                        Already have a hero? <span class="toggle-link" onclick="toggleForm()">Login</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedCharacter = null;
+        
+        // API Configuration
+        const API_BASE = 'api'; // Change this to your API URL
+        
+        function toggleForm() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            
+            loginForm.classList.toggle('hidden');
+            signupForm.classList.toggle('hidden');
+            
+            // Clear forms
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('signupUsername').value = '';
+            document.getElementById('signupPassword').value = '';
+            document.getElementById('signupConfirm').value = '';
+            selectedCharacter = null;
+            
+            // Clear character selection
+            document.querySelectorAll('.character-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+        }
+        
+        function selectCharacter(character) {
+            selectedCharacter = character;
+            
+            // Remove selection from all
+            document.querySelectorAll('.character-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selection to clicked
+            event.target.closest('.character-option').classList.add('selected');
+        }
+        
+        async function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                alert('⚠️ Please enter username and password!');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth.php?action=login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Store token and user data
+                    localStorage.setItem('fitquest_token', result.data.token);
+                    localStorage.setItem('fitquest_user', JSON.stringify(result.data.user));
+                    
+                    // Redirect to game
+                    window.location.href = 'fitquest-game.html';
+                } else {
+                    alert(`⚠️ ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('⚠️ Login failed. Please check your connection and try again.');
+            }
+        }
+        
+        async function signup() {
+            const username = document.getElementById('signupUsername').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirm').value;
+            
+            if (!username || !password || !confirmPassword) {
+                alert('⚠️ Please fill in all fields!');
+                return;
+            }
+            
+            if (username.length < 3) {
+                alert('⚠️ Username must be at least 3 characters long!');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('⚠️ Password must be at least 6 characters long!');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('⚠️ Passwords do not match!');
+                return;
+            }
+            
+            if (!selectedCharacter) {
+                alert('⚠️ Please choose your character class!');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth.php?action=register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                        character: selectedCharacter
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Store token and user data
+                    localStorage.setItem('fitquest_token', result.data.token);
+                    localStorage.setItem('fitquest_user', JSON.stringify(result.data.user));
+                    
+                    alert(`🎉 Welcome to FitQuest, ${username}! Your adventure begins now!`);
+                    
+                    // Redirect to game
+                    window.location.href = 'fitquest-game.html';
+                } else {
+                    alert(`⚠️ ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('⚠️ Registration failed. Please check your connection and try again.');
+            }
+        }
+        
+        // Check if user is already logged in
+        window.onload = async function() {
+            const token = localStorage.getItem('fitquest_token');
+            if (token) {
+                // Verify token is still valid
+                try {
+                    const response = await fetch(`${API_BASE}/auth.php?action=verify`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Token is valid, redirect to game
+                        window.location.href = 'fitquest-game.html';
+                    } else {
+                        // Token invalid, clear storage
+                        localStorage.removeItem('fitquest_token');
+                        localStorage.removeItem('fitquest_user');
+                    }
+                } catch (error) {
+                    console.error('Verification error:', error);
+                }
+            }
+        };
+        
+        // Allow Enter key to submit forms
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const loginForm = document.getElementById('loginForm');
+                if (!loginForm.classList.contains('hidden')) {
+                    login();
+                } else {
+                    signup();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
