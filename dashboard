@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitQuest - Level Up Your Health!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF6B35;
+            --secondary: #F7931E;
+            --success: #4ECDC4;
+            --energy: #FFE66D;
+            --power: #A8E6CF;
+            --danger: #FF6B6B;
+            --dark: #2D3561;
+            --darker: #1A1F3A;
+            --light: #FFF8F0;
+            --purple: #9B59B6;
+            --blue: #3498DB;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 20%, rgba(255, 230, 109, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            animation: pulseBackground 10s ease-in-out infinite;
+        }
+        
+        @keyframes pulseBackground {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: gameStart 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes gameStart {
+            0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+            60% { transform: scale(1.1) rotate(5deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        
+        h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2.5rem;
+            color: var(--light);
+            margin-bottom: 10px;
+            text-shadow: 
+                4px 4px 0px var(--primary),
+                8px 8px 0px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .tagline {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--energy);
+            font-size: 0.7rem;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+        
+        .stats-bar {
+            background: rgba(26, 31, 58, 0.9);
+            border: 4px solid var(--energy);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stat-item {
+            text-align: center;
+            position: relative;
+        }
+        
+        .stat-label {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.6rem;
+            color: var(--energy);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .stat-value {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 2px 2px 0px var(--primary);
+        }
+        
+        .xp-bar {
+            background: rgba(0, 0, 0, 0.5);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--success);
+            position: relative;
+            margin-top: 8px;
+        }
+        
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--energy));
+            transition: width 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 20px var(--success);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .quest-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            border: 5px solid var(--dark);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 
+                8px 8px 0px var(--darker),
+                0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quest-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.5),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .quest-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                12px 12px 0px var(--darker),
+                0 15px 50px rgba(0, 0, 0, 0.4);
+        }
+        
+        .quest-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quest-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: 4px solid var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 4px 4px 0px var(--darker);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .quest-icon.success { background: linear-gradient(135deg, var(--success), var(--power)); }
+        .quest-icon.energy { background: linear-gradient(135deg, var(--energy), var(--secondary)); }
+        
+        .quest-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.1rem;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 800;
+            color: var(--dark);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 4px solid var(--dark);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 4px 4px 0px var(--darker);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 0px var(--darker);
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            width: 100%;
+            padding: 16px;
+            border: 4px solid var(--dark);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 900;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 6px 6px 0px var(--darker);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: left 0.3s ease;
+        }
+        
+        .action-btn:hover::before {
+            left: 100%;
+        }
+        
+        .action-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px var(--darker);
+        }
+        
+        .action-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--darker);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--success), var(--power));
+            color: var(--dark);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-power {
+            background: linear-gradient(135deg, var(--energy), #FFB347);
+            color: var(--dark);
+        }
+        
+        .achievement-badge {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 4px solid var(--dark);
+            border-radius: 16px;
+            text-align: center;
+            animation: badgeAppear 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 4px 4px 0px var(--darker);
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes badgeAppear {
+            0% { opacity: 0; transform: scale(0.3) rotate(-180deg); }
+            60% { transform: scale(1.1) rotate(10deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        
+        .badge-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: spin 2s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-10deg) scale(1.1); }
+            75% { transform: rotate(10deg) scale(1.1); }
+        }
+        
+        .badge-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+        
+        .badge-description {
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+        
+        .underweight { background: linear-gradient(135deg, #E3F2FD, #BBDEFB); }
+        .normal { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); }
+        .overweight { background: linear-gradient(135deg, #FFF3E0, #FFE0B2); }
+        .obese { background: linear-gradient(135deg, #FFEBEE, #FFCDD2); }
+        
+        .goal-panel {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255, 230, 109, 0.2);
+            border: 4px solid var(--energy);
+            border-radius: 16px;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .panel-title {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .progress-container {
+            margin: 15px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .activity-log {
+            max-height: 450px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .activity-log::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .activity-log::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .activity-log::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .loot-item {
+            padding: 18px;
+            background: white;
+            border: 4px solid var(--dark);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            animation: itemDrop 0.5s ease-out;
+            box-shadow: 4px 4px 0px var(--darker);
+        }
+        
+        @keyframes itemDrop {
+            0% { opacity: 0; transform: translateY(-30px) rotate(-5deg); }
+            60% { transform: translateY(5px) rotate(2deg); }
+            100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+        }
+        
+        .loot-item:hover {
+            transform: translateX(5px) scale(1.02);
+            box-shadow: 6px 6px 0px var(--darker);
+        }
+        
+        .loot-info {
+            flex: 1;
+        }
+        
+        .loot-name {
+            font-weight: 900;
+            color: var(--dark);
+            margin-bottom: 6px;
+            font-size: 1.05rem;
+        }
+        
+        .loot-stats {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .loot-xp {
+            background: var(--success);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 0.85rem;
+            border: 2px solid var(--dark);
+            box-shadow: 2px 2px 0px var(--darker);
+        }
+        
+        .loot-date {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        
+        .delete-btn {
+            background: var(--danger);
+            border: 3px solid var(--dark);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 8px 12px;
+            width: auto;
+            margin: 0 0 0 10px;
+            border-radius: 8px;
+            font-weight: 900;
+            transition: all 0.2s ease;
+            box-shadow: 2px 2px 0px var(--darker);
+        }
+        
+        .delete-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 3px 3px 0px var(--darker);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--dark);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .empty-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            line-height: 2;
+        }
+        
+        .level-up-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, var(--energy), var(--secondary));
+            border: 6px solid var(--dark);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: levelUpPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+        
+        @keyframes levelUpPop {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-180deg); }
+            60% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+        
+        .level-up-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 2rem;
+            color: var(--dark);
+            text-shadow: 3px 3px 0px white;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.5rem; }
+            .tagline { font-size: 0.5rem; }
+            .grid { grid-template-columns: 1fr; }
+            .row { grid-template-columns: 1fr; }
+            .stats-bar { flex-direction: column; }
+            .quest-title { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚔️ FITQUEST ⚔️</h1>
+            <p class="tagline">Level Up Your Health!</p>
+        </header>
+        
+        <!-- Player Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="playerLevel">1</div>
+            </div>
+            <div class="stat-item" style="flex: 1; max-width: 400px;">
+                <div class="stat-label">Experience</div>
+                <div class="xp-bar">
+                    <div id="xpFill" class="xp-fill" style="width: 0%"></div>
+                </div>
+                <div style="color: white; font-size: 0.8rem; margin-top: 5px; font-weight: 700;">
+                    <span id="currentXP">0</span> / <span id="nextLevelXP">100</span> XP
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Activities</div>
+                <div class="stat-value" id="totalActivities">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Streak</div>
+                <div class="stat-value" id="streakDays">0</div>
+            </div>
+        </div>
+        
+        <div class="grid">
+            <!-- BMI Quest Card -->
+            <div class="quest-card">
+                <div class="quest-header">
+                    <div class="quest-icon">📊</div>
+                    <div class="quest-title">Stats Check</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="weight">⚖️ Weight (kg)</label>
+                    <input type="number" id="weight" placeholder="Enter weight" step="0.1" min="0">
+                </div>
+                
+                <div class="input-group">
+                    <label for="height">📏 Height (cm)</label>
+                    <input type="number" id="height" placeholder="Enter height" step="0.1" min="0">
+                </div>
+                
+                <button class="action-btn btn-primary" onclick="calculateBMI()">⚡ Calculate Stats</button>
+                
+                <div id="bmiResult" class="achievement-badge"></div>
+                
+                <div id="goalPanel" class="goal-panel" style="display: none;">
+                    <div class="panel-title">🎯 Set Quest Goal</div>
+                    <div class="input-group">
+                        <label for="targetWeight">Target Weight (kg)</label>
+                        <input type="number" id="targetWeight" placeholder="Enter goal" step="0.1" min="0">
+                    </div>
+                    <button class="action-btn btn-power" onclick="setGoal()">🏆 Accept Quest</button>
+                    <div id="progressPanel" style="display: none; margin-top: 20px;">
+                        <div class="panel-title">📈 Quest Progress</div>
+                        <div class="progress-container">
+                            <div class="xp-bar">
+                                <div id="questProgress" class="xp-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-label" style="margin-top: 10px;">
+                                <span id="currentWeight"></span>
+                                <span id="remainingWeight"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity Quest Card -->
+            <div class="quest-card">
+                <div class="quest-header">
+                    <div class="quest-icon success">🏃</div>
+                    <div class="quest-title">Battle Log</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="activityType">⚔️ Activity Type</label>
+                    <select id="activityType">
+                        <option value="">Choose your battle...</option>
+                        <option value="Running">🏃 Running Quest</option>
+                        <option value="Walking">🚶 Walking Adventure</option>
+                        <option value="Cycling">🚴 Cycling Expedition</option>
+                        <option value="Swimming">🏊 Swimming Challenge</option>
+                        <option value="Gym">💪 Gym Raid</option>
+                        <option value="Yoga">🧘 Yoga Meditation</option>
+                        <option value="Sports">⚽ Sports Arena</option>
+                        <option value="Other">✨ Custom Quest</option>
+                    </select>
+                </div>
+                
+                <div class="row">
+                    <div class="input-group">
+                        <label for="duration">⏱️ Duration (mins)</label>
+                        <input type="number" id="duration" placeholder="Time" min="0">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="calories">🔥 Energy Lost</label>
+                        <input type="number" id="calories" placeholder="Calories" min="0">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="notes">📝 Battle Notes</label>
+                    <textarea id="notes" rows="2" placeholder="How epic was it?"></textarea>
+                </div>
+                
+                <button class="action-btn btn-secondary" onclick="addActivity()">✨ Complete Quest</button>
+            </div>
+        </div>
+        
+        <!-- Activity History Card -->
+        <div class="quest-card">
+            <div class="quest-header">
+                <div class="quest-icon energy">📜</div>
+                <div class="quest-title">Adventure Log</div>
+            </div>
+            <div id="activityList" class="activity-log">
+                <div class="empty-state">
+                    <div class="empty-icon">🗺️</div>
+                    <p class="empty-text">Your adventure begins here!<br><br>Complete quests to gain XP</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Load game data
+        let activities = JSON.parse(localStorage.getItem('activities')) || [];
+        let userData = JSON.parse(localStorage.getItem('userData')) || {
+            level: 1,
+            xp: 0,
+            totalActivities: 0,
+            streak: 0,
+            lastActivityDate: null
+        };
+        
+        // XP system
+        const XP_PER_LEVEL = 100;
+        const XP_PER_ACTIVITY = 25;
+        const XP_PER_MINUTE = 1;
+        
+        // Initialize game
+        updatePlayerStats();
+        displayActivities();
+        
+        // Restore user health data
+        if (userData.weight) document.getElementById('weight').value = userData.weight;
+        if (userData.height) document.getElementById('height').value = userData.height;
+        if (userData.currentBMI) calculateBMI();
+        
+        function updatePlayerStats() {
+            document.getElementById('playerLevel').textContent = userData.level || 1;
+            document.getElementById('totalActivities').textContent = userData.totalActivities || 0;
+            document.getElementById('streakDays').textContent = userData.streak || 0;
+            
+            const currentXP = userData.xp || 0;
+            const nextLevel = XP_PER_LEVEL * userData.level;
+            const progress = (currentXP / nextLevel) * 100;
+            
+            document.getElementById('currentXP').textContent = currentXP;
+            document.getElementById('nextLevelXP').textContent = nextLevel;
+            document.getElementById('xpFill').style.width = progress + '%';
+        }
+        
+        function gainXP(amount) {
+            userData.xp += amount;
+            const nextLevel = XP_PER_LEVEL * userData.level;
+            
+            if (userData.xp >= nextLevel) {
+                userData.level++;
+                userData.xp -= nextLevel;
+                showLevelUp();
+            }
+            
+            saveUserData();
+            updatePlayerStats();
+        }
+        
+        function showLevelUp() {
+            const notification = document.createElement('div');
+            notification.className = 'level-up-notification';
+            notification.innerHTML = `
+                <div class="level-up-text">LEVEL UP!</div>
+                <div style="font-size: 4rem; margin: 20px 0;">🎉</div>
+                <div style="font-family: 'Press Start 2P', cursive; font-size: 1.2rem; color: var(--dark);">
+                    Level ${userData.level}
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value) / 100;
+            
+            if (!weight || !height || weight <= 0 || height <= 0) {
+                alert('⚠️ Please enter valid stats!');
+                return;
+            }
+            
+            const bmi = (weight / (height * height)).toFixed(1);
+            let category, categoryClass, description, icon;
+            
+            if (bmi < 18.5) {
+                category = 'Lightweight Class';
+                categoryClass = 'underweight';
+                description = 'Time to power up! Eat well and train hard.';
+                icon = '🌱';
+            } else if (bmi < 25) {
+                category = 'Champion Status';
+                categoryClass = 'normal';
+                description = 'Perfect balance achieved! Keep defending your title!';
+                icon = '👑';
+            } else if (bmi < 30) {
+                category = 'Tank Build';
+                categoryClass = 'overweight';
+                description = 'Strong foundation! Train harder to unlock agility boost.';
+                icon = '🛡️';
+            } else {
+                category = 'Heavy Armor';
+                categoryClass = 'obese';
+                description = 'Time for an epic transformation quest! You got this!';
+                icon = '⚔️';
+            }
+            
+            const resultDiv = document.getElementById('bmiResult');
+            resultDiv.className = `achievement-badge ${categoryClass}`;
+            resultDiv.innerHTML = `
+                <div class="badge-icon">${icon}</div>
+                <div class="badge-title">${bmi}</div>
+                <div style="font-weight: 900; font-size: 1.1rem; margin: 10px 0;">${category}</div>
+                <div class="badge-description">${description}</div>
+            `;
+            resultDiv.style.display = 'block';
+            
+            document.getElementById('goalPanel').style.display = 'block';
+            
+            userData.weight = weight;
+            userData.height = height * 100;
+            userData.currentBMI = bmi;
+            saveUserData();
+            
+            gainXP(15);
+            
+            if (userData.targetWeight) {
+                updateProgress();
+            }
+        }
+        
+        function setGoal() {
+            const targetWeight = parseFloat(document.getElementById('targetWeight').value);
+            const currentWeight = parseFloat(document.getElementById('weight').value);
+            
+            if (!targetWeight || !currentWeight || targetWeight <= 0) {
+                alert('⚠️ Please enter a valid target weight!');
+                return;
+            }
+            
+            userData.targetWeight = targetWeight;
+            userData.startWeight = currentWeight;
+            saveUserData();
+            
+            updateProgress();
+            gainXP(20);
+            
+            alert('🎯 Quest Accepted! Your journey begins now!');
+        }
+        
+        function updateProgress() {
+            const currentWeight = parseFloat(document.getElementById('weight').value);
+            const targetWeight = userData.targetWeight;
+            const startWeight = userData.startWeight;
+            
+            if (!targetWeight || !startWeight) return;
+            
+            const totalChange = Math.abs(targetWeight - startWeight);
+            const currentChange = Math.abs(currentWeight - startWeight);
+            const progress = Math.min((currentChange / totalChange) * 100, 100);
+            
+            const remaining = Math.abs(targetWeight - currentWeight).toFixed(1);
+            
+            document.getElementById('progressPanel').style.display = 'block';
+            document.getElementById('questProgress').style.width = progress + '%';
+            document.getElementById('currentWeight').textContent = `Current: ${currentWeight} kg`;
+            document.getElementById('remainingWeight').textContent = `To Goal: ${remaining} kg`;
+        }
+        
+        function addActivity() {
+            const activityType = document.getElementById('activityType').value;
+            const duration = parseInt(document.getElementById('duration').value);
+            const calories = parseInt(document.getElementById('calories').value);
+            const notes = document.getElementById('notes').value;
+            
+            if (!activityType || !duration || duration <= 0) {
+                alert('⚠️ Please select an activity and duration!');
+                return;
+            }
+            
+            const activity = {
+                id: Date.now(),
+                type: activityType,
+                duration: duration,
+                calories: calories || 0,
+                notes: notes,
+                date: new Date().toISOString(),
+                xpEarned: XP_PER_ACTIVITY + (duration * XP_PER_MINUTE)
+            };
+            
+            activities.unshift(activity);
+            localStorage.setItem('activities', JSON.stringify(activities));
+            
+            // Update user stats
+            userData.totalActivities++;
+            updateStreak();
+            
+            // Award XP
+            gainXP(activity.xpEarned);
+            
+            // Clear form
+            document.getElementById('activityType').value = '';
+            document.getElementById('duration').value = '';
+            document.getElementById('calories').value = '';
+            document.getElementById('notes').value = '';
+            
+            displayActivities();
+            
+            // Show success message
+            alert(`🎉 Quest Complete! +${activity.xpEarned} XP!`);
+        }
+        
+        function updateStreak() {
+            const today = new Date().toDateString();
+            const lastActivity = userData.lastActivityDate ? new Date(userData.lastActivityDate).toDateString() : null;
+            
+            if (lastActivity === today) {
+                return; // Already logged today
+            }
+            
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            
+            if (lastActivity === yesterday) {
+                userData.streak++;
+            } else if (lastActivity !== today) {
+                userData.streak = 1;
+            }
+            
+            userData.lastActivityDate = new Date().toISOString();
+            saveUserData();
+            updatePlayerStats();
+        }
+        
+        function displayActivities() {
+            const listDiv = document.getElementById('activityList');
+            
+            if (activities.length === 0) {
+                listDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🗺️</div>
+                        <p class="empty-text">Your adventure begins here!<br><br>Complete quests to gain XP</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            listDiv.innerHTML = activities.map(activity => {
+                const date = new Date(activity.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                return `
+                    <div class="loot-item">
+                        <div class="loot-info">
+                            <div class="loot-name">${activity.type}</div>
+                            <div class="loot-stats">
+                                ⏱️ ${activity.duration} mins
+                                ${activity.calories ? ` • 🔥 ${activity.calories} cal` : ''}
+                                ${activity.notes ? ` • 📝 ${activity.notes}` : ''}
+                            </div>
+                            <div class="loot-date">${formattedDate}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="loot-xp">+${activity.xpEarned} XP</div>
+                            <button class="delete-btn" onclick="deleteActivity(${activity.id})">✕</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function deleteActivity(id) {
+            if (confirm('🗑️ Delete this quest from history?')) {
+                const activity = activities.find(a => a.id === id);
+                activities = activities.filter(activity => activity.id !== id);
+                localStorage.setItem('activities', JSON.stringify(activities));
+                
+                // Decrease total activities
+                userData.totalActivities = Math.max(0, userData.totalActivities - 1);
+                saveUserData();
+                updatePlayerStats();
+                
+                displayActivities();
+            }
+        }
+        
+        function saveUserData() {
+            localStorage.setItem('userData', JSON.stringify(userData));
+        }
+    </script>
+</body>
+</html>
