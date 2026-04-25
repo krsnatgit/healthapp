@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Questionnaire</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9f8f6;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --muted: #888;
+      --accent: #2d2d2d;
+      --border: #e0ddd8;
+      --progress: #1a1a1a;
+      --error: #c0392b;
+      --radius: 2px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 60px 20px 80px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      width: 100%;
+      max-width: 620px;
+      margin-bottom: 48px;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .progress-track {
+      height: 1px;
+      background: var(--border);
+      position: relative;
+    }
+    .progress-fill {
+      height: 1px;
+      background: var(--progress);
+      transition: width .4s ease;
+      width: 0%;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      width: 100%;
+      max-width: 620px;
+      padding: 52px 56px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── Step ── */
+    .step { display: none; animation: fadeIn .35s ease; }
+    .step.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-eyebrow {
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .step-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .step-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 32px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    .field label .req { color: var(--muted); margin-left: 3px; }
+
+    .field input[type="text"],
+    .field input[type="email"],
+    .field input[type="tel"],
+    .field textarea,
+    .field select {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      padding: 8px 0 10px;
+      outline: none;
+      transition: border-color .2s;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus { border-bottom-color: var(--accent); }
+    .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+    .field select { cursor: pointer; }
+
+    /* ── Radio / Checkbox groups ── */
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      font-size: 14px;
+    }
+    .option:hover { border-color: var(--accent); }
+    .option input { display: none; }
+    .option.selected {
+      border-color: var(--accent);
+      background: #f4f3f0;
+    }
+    .option-dot {
+      width: 16px; height: 16px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: border-color .2s, background .2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .option.selected .option-dot {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+    .option-dot::after {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: white;
+      display: none;
+    }
+    .option.selected .option-dot::after { display: block; }
+
+    /* Checkbox variant */
+    .option.checkbox .option-dot { border-radius: var(--radius); }
+    .option.checkbox.selected .option-dot::after {
+      width: 8px; height: 5px;
+      background: none;
+      border-left: 1.5px solid white;
+      border-bottom: 1.5px solid white;
+      transform: rotate(-45deg) translateY(-1px);
+      border-radius: 0;
+    }
+
+    /* ── Scale ── */
+    .scale { display: flex; gap: 8px; }
+    .scale-btn {
+      flex: 1;
+      padding: 12px 0;
+      border: 1px solid var(--border);
+      background: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .scale-btn:hover { border-color: var(--accent); }
+    .scale-btn.selected { border-color: var(--accent); background: var(--accent); color: white; }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── Error ── */
+    .field-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 6px;
+      display: none;
+    }
+    .field.has-error .field-error { display: block; }
+    .field.has-error input,
+    .field.has-error textarea,
+    .field.has-error select { border-bottom-color: var(--error); }
+
+    /* ── Navigation ── */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 14px 32px;
+      cursor: pointer;
+      border: 1px solid var(--accent);
+      transition: background .2s, color .2s;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: #444; border-color: #444; }
+    .btn-ghost { background: transparent; color: var(--accent); }
+    .btn-ghost:hover { background: #f4f3f0; }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ── Success screen ── */
+    #success {
+      display: none;
+      text-align: center;
+      padding: 32px 0;
+    }
+    #success.active { display: block; animation: fadeIn .4s ease; }
+    .checkmark {
+      width: 52px; height: 52px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 20px;
+    }
+    #success h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+    #success p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+    /* ── Spinner ── */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      .card { padding: 36px 24px; }
+      .scale { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="step-label">Step 1 of 4</span>
+      <span id="pct-label">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <div class="card">
+
+    <!-- ════════════════════════════════════
+         STEP 1 — Personal Info
+    ════════════════════════════════════ -->
+    <div class="step active" id="step-1">
+      <p class="step-eyebrow">Section 1 of 4</p>
+      <h1 class="step-title">About You</h1>
+      <p class="step-subtitle">Basic information to help us understand your background.</p>
+
+      <!-- Q1 -->
+      <div class="field" id="f-name">
+        <label>Full name <span class="req">*</span></label>
+        <input type="text" id="name" placeholder="Jane Smith" />
+        <p class="field-error">Please enter your name.</p>
+      </div>
+
+      <!-- Q2 -->
+      <div class="field" id="f-email">
+        <label>Email address <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="jane@example.com" />
+        <p class="field-error">Please enter a valid email.</p>
+      </div>
+
+      <!-- Q3 -->
+      <div class="field" id="f-age">
+        <label>Age range <span class="req">*</span></label>
+        <div class="options" id="age-options">
+          <label class="option">
+            <input type="radio" name="age" value="Under 25" />
+            <span class="option-dot"></span> Under 25
+          </label>
+          <label class="option">
+            <input type="radio" name="age" value="25–34" />
+            <span class="option-dot"></span> 25–34
+          </label>
+          <label class="option">
+            <input type="radio" name="age" value="35–44" />
+            <span class="option-dot"></span> 35–44
+          </label>
+          <label class="option">
+            <input type="radio" name="age" value="45+" />
+            <span class="option-dot"></span> 45 or older
+          </label>
+        </div>
+        <p class="field-error">Please select an age range.</p>
+      </div>
+
+      <div class="nav">
+        <span></span>
+        <button class="btn btn-primary" onclick="goTo(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         STEP 2 — Background
+    ════════════════════════════════════ -->
+    <div class="step" id="step-2">
+      <p class="step-eyebrow">Section 2 of 4</p>
+      <h1 class="step-title">Your Background</h1>
+      <p class="step-subtitle">Help us understand your current situation.</p>
+
+      <!-- Q4 -->
+      <div class="field" id="f-occupation">
+        <label>Current occupation <span class="req">*</span></label>
+        <select id="occupation">
+          <option value="" disabled selected>Select one…</option>
+          <option>Student</option>
+          <option>Employed – Full-time</option>
+          <option>Employed – Part-time</option>
+          <option>Self-employed</option>
+          <option>Unemployed</option>
+          <option>Retired</option>
+          <option>Prefer not to say</option>
+        </select>
+        <p class="field-error">Please select an option.</p>
+      </div>
+
+      <!-- Q5 -->
+      <div class="field" id="f-location">
+        <label>City / Region</label>
+        <input type="text" id="location" placeholder="e.g. Chicago, IL" />
+      </div>
+
+      <!-- Q6 -->
+      <div class="field" id="f-experience">
+        <label>Years of experience in your field <span class="req">*</span></label>
+        <div class="options" id="exp-options">
+          <label class="option">
+            <input type="radio" name="experience" value="Less than 1 year" />
+            <span class="option-dot"></span> Less than 1 year
+          </label>
+          <label class="option">
+            <input type="radio" name="experience" value="1–3 years" />
+            <span class="option-dot"></span> 1–3 years
+          </label>
+          <label class="option">
+            <input type="radio" name="experience" value="4–7 years" />
+            <span class="option-dot"></span> 4–7 years
+          </label>
+          <label class="option">
+            <input type="radio" name="experience" value="8+ years" />
+            <span class="option-dot"></span> 8 or more years
+          </label>
+        </div>
+        <p class="field-error">Please select an option.</p>
+      </div>
+
+      <div class="nav">
+        <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
+        <button class="btn btn-primary" onclick="goTo(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         STEP 3 — Preferences
+    ════════════════════════════════════ -->
+    <div class="step" id="step-3">
+      <p class="step-eyebrow">Section 3 of 4</p>
+      <h1 class="step-title">Your Preferences</h1>
+      <p class="step-subtitle">Tell us how you think and work.</p>
+
+      <!-- Q7 -->
+      <div class="field" id="f-style">
+        <label>How do you prefer to work? <span class="req">*</span></label>
+        <div class="options" id="style-options">
+          <label class="option">
+            <input type="radio" name="style" value="Independently" />
+            <span class="option-dot"></span> Independently
+          </label>
+          <label class="option">
+            <input type="radio" name="style" value="Small team" />
+            <span class="option-dot"></span> In a small team
+          </label>
+          <label class="option">
+            <input type="radio" name="style" value="Large group" />
+            <span class="option-dot"></span> In a large group
+          </label>
+        </div>
+        <p class="field-error">Please select an option.</p>
+      </div>
+
+      <!-- Q8 — Scale -->
+      <div class="field" id="f-risk">
+        <label>How comfortable are you with risk? <span class="req">*</span></label>
+        <div class="scale" id="risk-scale">
+          <button class="scale-btn" type="button" onclick="selectScale('risk', this, '1')">1</button>
+          <button class="scale-btn" type="button" onclick="selectScale('risk', this, '2')">2</button>
+          <button class="scale-btn" type="button" onclick="selectScale('risk', this, '3')">3</button>
+          <button class="scale-btn" type="button" onclick="selectScale('risk', this, '4')">4</button>
+          <button class="scale-btn" type="button" onclick="selectScale('risk', this, '5')">5</button>
+        </div>
+        <div class="scale-labels"><span>Risk-averse</span><span>Risk-tolerant</span></div>
+        <p class="field-error">Please select a value.</p>
+      </div>
+
+      <!-- Q9 — Checkboxes (multi-select) -->
+      <div class="field" id="f-interests">
+        <label>Areas of interest (select all that apply)</label>
+        <div class="options" id="interest-options">
+          <label class="option checkbox">
+            <input type="checkbox" name="interests" value="Technology" />
+            <span class="option-dot"></span> Technology
+          </label>
+          <label class="option checkbox">
+            <input type="checkbox" name="interests" value="Finance" />
+            <span class="option-dot"></span> Finance
+          </label>
+          <label class="option checkbox">
+            <input type="checkbox" name="interests" value="Health" />
+            <span class="option-dot"></span> Health & Wellness
+          </label>
+          <label class="option checkbox">
+            <input type="checkbox" name="interests" value="Education" />
+            <span class="option-dot"></span> Education
+          </label>
+          <label class="option checkbox">
+            <input type="checkbox" name="interests" value="Arts" />
+            <span class="option-dot"></span> Arts & Culture
+          </label>
+        </div>
+      </div>
+
+      <div class="nav">
+        <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
+        <button class="btn btn-primary" onclick="goTo(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         STEP 4 — Final Questions
+    ════════════════════════════════════ -->
+    <div class="step" id="step-4">
+      <p class="step-eyebrow">Section 4 of 4</p>
+      <h1 class="step-title">Final Thoughts</h1>
+      <p class="step-subtitle">Almost done — a few last questions.</p>
+
+      <!-- Q10 -->
+      <div class="field" id="f-goal">
+        <label>What is your primary goal right now? <span class="req">*</span></label>
+        <div class="options" id="goal-options">
+          <label class="option">
+            <input type="radio" name="goal" value="Career growth" />
+            <span class="option-dot"></span> Career growth
+          </label>
+          <label class="option">
+            <input type="radio" name="goal" value="Financial stability" />
+            <span class="option-dot"></span> Financial stability
+          </label>
+          <label class="option">
+            <input type="radio" name="goal" value="Personal development" />
+            <span class="option-dot"></span> Personal development
+          </label>
+          <label class="option">
+            <input type="radio" name="goal" value="Health & balance" />
+            <span class="option-dot"></span> Health & balance
+          </label>
+        </div>
+        <p class="field-error">Please select an option.</p>
+      </div>
+
+      <!-- Q11 -->
+      <div class="field" id="f-satisfaction">
+        <label>How satisfied are you with your current situation overall? <span class="req">*</span></label>
+        <div class="scale" id="satisfaction-scale">
+          <button class="scale-btn" type="button" onclick="selectScale('satisfaction', this, '1')">1</button>
+          <button class="scale-btn" type="button" onclick="selectScale('satisfaction', this, '2')">2</button>
+          <button class="scale-btn" type="button" onclick="selectScale('satisfaction', this, '3')">3</button>
+          <button class="scale-btn" type="button" onclick="selectScale('satisfaction', this, '4')">4</button>
+          <button class="scale-btn" type="button" onclick="selectScale('satisfaction', this, '5')">5</button>
+        </div>
+        <div class="scale-labels"><span>Not at all</span><span>Very satisfied</span></div>
+        <p class="field-error">Please select a value.</p>
+      </div>
+
+      <!-- Q12 -->
+      <div class="field" id="f-comments">
+        <label>Anything else you'd like to share?</label>
+        <textarea id="comments" placeholder="Optional…"></textarea>
+      </div>
+
+      <div class="nav">
+        <button class="btn btn-ghost" onclick="goTo(3)">← Back</button>
+        <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">Submit</button>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SUCCESS
+    ════════════════════════════════════ -->
+    <div id="success">
+      <div class="checkmark">✓</div>
+      <h2>Thank you.</h2>
+      <p>Your responses have been received.<br/>We'll be in touch soon.</p>
+    </div>
+
+  </div><!-- /card -->
+
+  <script>
+    // ── CONFIG ──────────────────────────────────────────
+    // Replace with your deployed Google Apps Script URL:
+    const SCRIPT_URL = '1nA2AJ3AoNor4rtQy81LKNiAD3mhWR7yIZ0ZlFr4RhXU';
+
+    // ── State ────────────────────────────────────────────
+    let currentStep = 1;
+    const totalSteps = 4;
+    const scaleValues = {};
+
+    // ── Progress ─────────────────────────────────────────
+    function updateProgress(step) {
+      const pct = Math.round(((step - 1) / totalSteps) * 100);
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('step-label').textContent = `Step ${step} of ${totalSteps}`;
+      document.getElementById('pct-label').textContent = pct + '%';
+    }
+
+    // ── Option click handlers ─────────────────────────────
+    document.querySelectorAll('.options').forEach(group => {
+      group.querySelectorAll('.option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const inp = opt.querySelector('input');
+          if (inp.type === 'radio') {
+            group.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            inp.checked = true;
+            opt.classList.add('selected');
+          } else {
+            inp.checked = !inp.checked;
+            opt.classList.toggle('selected', inp.checked);
+          }
+          // Clear error on interaction
+          const field = group.closest('.field');
+          if (field) field.classList.remove('has-error');
+        });
+      });
+    });
+
+    // ── Scale buttons ─────────────────────────────────────
+    function selectScale(key, btn, val) {
+      scaleValues[key] = val;
+      const scale = btn.closest('.scale');
+      scale.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      const field = scale.closest('.field');
+      if (field) field.classList.remove('has-error');
+    }
+
+    // ── Validation ────────────────────────────────────────
+    function validateStep(step) {
+      let valid = true;
+
+      const clearErr = id => document.getElementById(id)?.classList.remove('has-error');
+      const setErr   = id => { document.getElementById(id)?.classList.add('has-error'); valid = false; };
+
+      if (step === 1) {
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const age = document.querySelector('input[name="age"]:checked');
+        if (!name) setErr('f-name'); else clearErr('f-name');
+        if (!email || !/\S+@\S+\.\S+/.test(email)) setErr('f-email'); else clearErr('f-email');
+        if (!age) setErr('f-age'); else clearErr('f-age');
+      }
+
+      if (step === 2) {
+        const occ = document.getElementById('occupation').value;
+        const exp = document.querySelector('input[name="experience"]:checked');
+        if (!occ) setErr('f-occupation'); else clearErr('f-occupation');
+        if (!exp) setErr('f-experience'); else clearErr('f-experience');
+      }
+
+      if (step === 3) {
+        const style = document.querySelector('input[name="style"]:checked');
+        if (!style) setErr('f-style'); else clearErr('f-style');
+        if (!scaleValues['risk']) setErr('f-risk'); else clearErr('f-risk');
+      }
+
+      if (step === 4) {
+        const goal = document.querySelector('input[name="goal"]:checked');
+        if (!goal) setErr('f-goal'); else clearErr('f-goal');
+        if (!scaleValues['satisfaction']) setErr('f-satisfaction'); else clearErr('f-satisfaction');
+      }
+
+      return valid;
+    }
+
+    // ── Navigation ────────────────────────────────────────
+    function goTo(target) {
+      if (target > currentStep && !validateStep(currentStep)) return;
+      document.getElementById(`step-${currentStep}`).classList.remove('active');
+      currentStep = target;
+      document.getElementById(`step-${currentStep}`).classList.add('active');
+      updateProgress(currentStep);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Collect data ──────────────────────────────────────
+    function collectData() {
+      const checked = (name) => {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        return el ? el.value : '';
+      };
+      const checkedMulti = (name) =>
+        [...document.querySelectorAll(`input[name="${name}"]:checked`)]
+          .map(el => el.value).join(', ');
+
+      return {
+        timestamp:    new Date().toISOString(),
+        name:         document.getElementById('name').value.trim(),
+        email:        document.getElementById('email').value.trim(),
+        age:          checked('age'),
+        occupation:   document.getElementById('occupation').value,
+        location:     document.getElementById('location').value.trim(),
+        experience:   checked('experience'),
+        work_style:   checked('style'),
+        risk_score:   scaleValues['risk'] || '',
+        interests:    checkedMulti('interests'),
+        primary_goal: checked('goal'),
+        satisfaction: scaleValues['satisfaction'] || '',
+        comments:     document.getElementById('comments').value.trim(),
+      };
+    }
+
+    // ── Submit ────────────────────────────────────────────
+    async function submitForm() {
+      if (!validateStep(4)) return;
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+      const data = collectData();
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        // no-cors means we can't read the response, assume success
+        showSuccess();
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Submit';
+        alert('Something went wrong. Please try again.');
+      }
+    }
+
+    function showSuccess() {
+      document.getElementById(`step-${currentStep}`).classList.remove('active');
+      document.getElementById('progress-fill').style.width = '100%';
+      document.getElementById('step-label').textContent = 'Complete';
+      document.getElementById('pct-label').textContent = '100%';
+      document.getElementById('success').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Init ──────────────────────────────────────────────
+    updateProgress(1);
+  </script>
+</body>
+</html>
